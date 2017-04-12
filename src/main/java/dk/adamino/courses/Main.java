@@ -2,6 +2,7 @@ package dk.adamino.courses;
 
 import model.CourseIdeaModel;
 import model.CourseIdeaDAO;
+import model.NotFoundException;
 import model.SimpleCourseIdeaDAO;
 import spark.ModelAndView;
 import spark.template.handlebars.HandlebarsTemplateEngine;
@@ -73,6 +74,14 @@ public class Main {
             idea.addVoter(request.attribute("username"));
             response.redirect("/ideas");
             return null;
+        });
+
+        exception(NotFoundException.class, (exception, request, response) -> {
+            response.status(404);
+            HandlebarsTemplateEngine engine = new HandlebarsTemplateEngine();
+            String html = engine.render(
+                    new ModelAndView(null, "not-found.hbs"));
+            response.body(html);
         });
 
     }
